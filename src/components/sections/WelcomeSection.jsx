@@ -1,7 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function WelcomeSection() {
+  const router = useRouter();
+
+  const handleLearnMore = () => {
+    router.push("/about-us/history");
+  };
+
   return (
     <motion.section 
       initial={{ opacity: 0, y: 50 }}
@@ -19,7 +26,10 @@ export default function WelcomeSection() {
               molding young minds and shaping future leaders through quality education and 
               strong moral values.
             </p>
-            <button className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition">
+            <button
+              onClick={handleLearnMore}
+              className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
+            >
               Learn More
             </button>
           </div>
@@ -34,4 +44,4 @@ export default function WelcomeSection() {
       </div>
     </motion.section>
   );
-} 
+}
