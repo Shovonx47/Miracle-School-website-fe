@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 export default function WelcomeSection() {
   const router = useRouter();
 
-<<<<<<< HEAD
   const handleLearnMoreClick = () => {
-=======
-  const handleLearnMore = () => {
->>>>>>> ea8f827d9a0ca746c074aeb21b9e0687ff84803a
     router.push("/about-us/history");
   };
 
@@ -30,13 +26,8 @@ export default function WelcomeSection() {
               molding young minds and shaping future leaders through quality education and 
               strong moral values.
             </p>
-<<<<<<< HEAD
             <button 
               onClick={handleLearnMoreClick}
-=======
-            <button
-              onClick={handleLearnMore}
->>>>>>> ea8f827d9a0ca746c074aeb21b9e0687ff84803a
               className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
             >
               Learn More

@@ -9,9 +9,6 @@ export default function NewsEventsSection() {
       date: "March 15, 2024",
       title: "Annual Sports Day",
       description: "Join us for our annual sports day celebration featuring various competitions.",
-<<<<<<< HEAD
-      image: "/assets/images/banners/pexels-goumbik-296301.jpg"
-=======
       image: "/images/sports.jpg",
       category: "Sports",
       content: `
@@ -23,37 +20,28 @@ export default function NewsEventsSection() {
         Venue: School Main Ground</p>
         // ... rest of the content ...
       `
->>>>>>> ea8f827d9a0ca746c074aeb21b9e0687ff84803a
     },
     {
       id: 'science-fair-2024',
       date: "March 20, 2024",
       title: "Science Fair 2024",
       description: "Students showcase their innovative science projects.",
-<<<<<<< HEAD
-      image: "/assets/images/banners/pexels-rdne-7606209.jpg"
-=======
       image: "/images/science-fair.jpg",
       category: "Academic",
       content: `
         // Add detailed content here
       `
->>>>>>> ea8f827d9a0ca746c074aeb21b9e0687ff84803a
     },
     {
       id: 'cultural-program-2024',
       date: "March 25, 2024",
       title: "Cultural Program",
       description: "Celebrating our rich cultural heritage through performances.",
-<<<<<<< HEAD
-      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg"
-=======
       image: "/images/cultural.jpg",
       category: "Culture",
       content: `
         // Add detailed content here
       `
->>>>>>> ea8f827d9a0ca746c074aeb21b9e0687ff84803a
     }
   ];
 
