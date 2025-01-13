@@ -9,7 +9,7 @@ export default function NewsEventsSection() {
       date: "March 15, 2024",
       title: "Annual Sports Day",
       description: "Join us for our annual sports day celebration featuring various competitions.",
-      image: "/images/sports.jpg",
+      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
       category: "Sports",
       content: `
         <p>We are excited to announce our upcoming Annual Sports Day, a celebration of athletic excellence and school spirit. This year's event promises to be bigger and better than ever before.</p>
@@ -26,7 +26,7 @@ export default function NewsEventsSection() {
       date: "March 20, 2024",
       title: "Science Fair 2024",
       description: "Students showcase their innovative science projects.",
-      image: "/images/science-fair.jpg",
+      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
       category: "Academic",
       content: `
         // Add detailed content here
@@ -37,7 +37,7 @@ export default function NewsEventsSection() {
       date: "March 25, 2024",
       title: "Cultural Program",
       description: "Celebrating our rich cultural heritage through performances.",
-      image: "/images/cultural.jpg",
+      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
       category: "Culture",
       content: `
         // Add detailed content here
