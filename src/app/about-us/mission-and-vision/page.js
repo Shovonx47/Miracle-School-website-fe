@@ -12,7 +12,7 @@ export default function MissionVisionPage() {
       {/* Hero Section */}
       <div className="relative h-[400px] rounded-xl overflow-hidden">
         <Image
-          src="/images/campus-view.jpg"
+          src="/assets/images/Buildings/analog-landscape-city-with-buildings.jpg"
           alt="Notre Dame College Campus"
           fill
           className="object-cover"
@@ -58,7 +58,7 @@ export default function MissionVisionPage() {
             </div>
             <div className="relative h-full min-h-[300px]">
               <Image
-                src="/images/students-studying.jpg"
+                src="/assets/images/mv/yan-berthemy-TRrBszDmuWE-unsplash.jpg"
                 alt="Students in library"
                 fill
                 className="object-cover"
@@ -74,7 +74,7 @@ export default function MissionVisionPage() {
           <div className="grid md:grid-cols-2">
             <div className="relative h-full min-h-[300px] md:order-2">
               <Image
-                src="/images/campus-life.jpg"
+                src="/assets/images/mv/national-cancer-institute-N_aihp118p8-unsplash.jpg"
                 alt="Campus Life"
                 fill
                 className="object-cover"

@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 export default function NewsArticle({ params }) {
   const router = useRouter();
   
-  // In a real app, fetch the specific news article using the ID
   const news = [
     {
+      id: 'annual-sports-day-2024',
       date: "March 15, 2024",
       title: "Annual Sports Day",
-      description: "Join us for our annual sports day celebration featuring various competitions. Students from all grades will participate in track and field events, team sports, and individual competitions. Parents are welcome to attend and cheer for their children.",
-      image: "/images/sports.jpg",
+      description: "Join us for our annual sports day celebration featuring various competitions.",
+      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
       category: "Sports",
       content: `
         <p>We are excited to announce our upcoming Annual Sports Day, a celebration of athletic excellence and school spirit. This year's event promises to be bigger and better than ever before.</p>
@@ -41,7 +41,76 @@ export default function NewsArticle({ params }) {
         <p>We have arranged for refreshments and seating for all parents and guardians. Medical staff will be present throughout the event to ensure safety.</p>
       `
     },
-    // ... other news items
+    {
+      id: 'science-fair-2024',
+      date: "March 20, 2024",
+      title: "Science Fair 2024",
+      description: "Students showcase their innovative science projects.",
+      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
+      category: "Academic",
+      content: `
+        <p>Get ready for an exciting showcase of scientific innovation at our annual Science Fair 2024! Students will present their groundbreaking projects and discoveries.</p>
+
+        <h2>Event Details</h2>
+        <p>Date: March 20, 2024<br/>
+        Time: 9:00 AM - 3:00 PM<br/>
+        Venue: School Auditorium</p>
+
+        <h2>Categories</h2>
+        <ul>
+          <li>Environmental Science</li>
+          <li>Robotics & Technology</li>
+          <li>Life Sciences</li>
+          <li>Physical Sciences</li>
+          <li>Mathematics & Computing</li>
+        </ul>
+
+        <h2>Schedule</h2>
+        <p>9:00 AM - Project Setup<br/>
+        10:00 AM - Judging Begins<br/>
+        12:00 PM - Lunch Break<br/>
+        1:00 PM - Public Viewing<br/>
+        2:30 PM - Awards Ceremony</p>
+
+        <h2>Special Features</h2>
+        <p>This year's science fair will include interactive demonstrations, guest speakers from leading research institutions, and special awards for innovative solutions to real-world problems.</p>
+      `
+    },
+    {
+      id: 'cultural-program-2024',
+      date: "March 25, 2024",
+      title: "Cultural Program",
+      description: "Celebrating our rich cultural heritage through performances.",
+      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
+      category: "Culture",
+      content: `
+        <p>Join us for an evening of cultural celebration featuring performances that showcase our diverse heritage and artistic talents.</p>
+
+        <h2>Event Details</h2>
+        <p>Date: March 25, 2024<br/>
+        Time: 5:00 PM - 8:00 PM<br/>
+        Venue: School Auditorium</p>
+
+        <h2>Program Highlights</h2>
+        <ul>
+          <li>Traditional Dance Performances</li>
+          <li>Musical Presentations</li>
+          <li>Drama Productions</li>
+          <li>Poetry Recitations</li>
+          <li>Art Exhibition</li>
+        </ul>
+
+        <h2>Schedule</h2>
+        <p>5:00 PM - Welcome Ceremony<br/>
+        5:30 PM - Cultural Performances Begin<br/>
+        6:30 PM - Intermission & Refreshments<br/>
+        7:00 PM - Second Half of Performances<br/>
+        7:45 PM - Grand Finale</p>
+
+        <h2>Additional Information</h2>
+        <p>Traditional attire is encouraged. Refreshments will be served during the intermission. Photography is permitted during the performances.</p>
+      `
+    }
   ];
 
   const article = news.find(item => item.id === params.id) || null;
