@@ -17,7 +17,7 @@ export default function Navbar() {
     },
     {
       title: "Admissions",
-      submenu: ["Admission Process", "Eligibility Criteria", "Application Forms", "Tuition & Fees", "Scholarships"],
+      submenu: ["Admission Process", "FAQs", "Application Forms", "Tuition & Fees", "Scholarships"],
     },
     {
       title: "Student Life",
