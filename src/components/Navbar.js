@@ -17,11 +17,11 @@ export default function Navbar() {
     },
     {
       title: "Admissions",
-      submenu: ["Admission Process", "FAQs", "Application Forms", "Tuition & Fees", "Scholarships"],
+      submenu: ["Admission Process", "FAQs", "Tuition & Fees", "Scholarships & Aid"],
     },
     {
       title: "Student Life",
-      submenu: ["Extracurricular Activities", "Student Services", "Campus Facilities", "Events & Calendars"],
+      submenu: ["Extracurricular Activities","Campus Facilities", "Events & Calendars"],
     },
     {
       title: "News & Events",
