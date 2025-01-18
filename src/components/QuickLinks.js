@@ -3,8 +3,8 @@ export default function QuickLinks() {
     { title: "Online Admission", url: "/admissions/admission-process" },
     { title: "Academic Calendar", url: "/calendar" },
     { title: "Results", url: "/results" },
-    { title: "Photo Gallery", url: "/gallery" },
-    { title: "Contact Us", url: "/contact" }
+    { title: "Photo Gallery", url: "/photo-gallery" },
+    { title: "Contact Us", url: "/contact-us/contact-information" }
   ];
 
   return (
