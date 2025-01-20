@@ -59,10 +59,10 @@ const CampusFacilities = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const facilitySlides = [
-    { image: "/api/placeholder/1200/500", title: "State-of-the-Art Science Labs" },
-    { image: "/api/placeholder/1200/500", title: "Modern Computer Centers" },
-    { image: "/api/placeholder/1200/500", title: "Extensive Library" },
-    { image: "/api/placeholder/1200/500", title: "Sports Complex" },
+    { image: "/assets/images/facilities/pexels-kobeboy-1516440.jpg", title: "State-of-the-Art Science Labs" },
+    { image: "/assets/images/facilities/pexels-norma-mortenson-8457622.jpg", title: "Modern Computer Centers" },
+    { image: "/assets/images/facilities/pexels-thirdman-8926636.jpg", title: "Extensive Library" },
+    { image: "/assets/images/facilities/pexels-tomfisk-3195186.jpg", title: "Sports Complex" },
   ];
 
   const facilities = [
@@ -70,37 +70,37 @@ const CampusFacilities = () => {
       IconComponent: Flask,
       title: "Science Laboratories",
       description: "Our cutting-edge science laboratories are equipped with the latest research equipment and safety features. The facility includes separate labs for Physics, Chemistry, and Biology, each designed to provide hands-on learning experiences. Students have access to advanced microscopes, analytical instruments, and digital data logging systems.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-norma-mortenson-8457622.jpg", "/assets/images/facilities/pexels-thirdman-8926636.jpg"]
     },
     {
       IconComponent: Monitor,
       title: "Computer Labs",
       description: "Multiple computer laboratories featuring the latest hardware and software resources. Each lab is equipped with high-speed internet, development tools, and specialized software for programming, design, and multimedia work. The facilities include dedicated spaces for cybersecurity training and software development.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-ron-lach-10646606.jpg", "/assets/images/facilities/pexels-thirdman-8926541.jpg"]
     },
     {
       IconComponent: BookOpen,
       title: "Library & Learning Center",
       description: "Our modern library spans three floors and houses over 50,000 books, digital resources, and multimedia materials. Features include quiet study zones, group discussion rooms, and a digital catalog system. The learning center offers computer workstations and access to online journals.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-rdne-8419167.jpg", "/assets/images/facilities/pexels-thirdman-8926541.jpg"]
     },
     {
       IconComponent: Dumbbell,
       title: "Sports Complex",
       description: "Comprehensive sports facilities including an indoor gymnasium, Olympic-sized swimming pool, and outdoor courts. The complex features modern fitness equipment, professional training areas, and spaces for various indoor sports. Outdoor facilities include tennis courts and a football field.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-mary-taylor-5896836.jpg", "/assets/images/facilities/pexels-thirdman-8926541.jpg"]
     },
     {
       IconComponent: Coffee,
       title: "Student Commons",
       description: "A vibrant space designed for student relaxation and social interaction. Includes a modern cafeteria serving diverse cuisine, comfortable seating areas, and recreational zones. The commons features high-speed Wi-Fi, charging stations, and spaces for casual group meetings.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-tomfisk-3195186.jpg", "/assets/images/facilities/pexels-thirdman-8926541.jpg"]
     },
     {
       IconComponent: HeartPulse,
       title: "Medical Center",
       description: "On-campus medical facility staffed with qualified healthcare professionals. Equipped to handle emergency situations and provide basic healthcare services. Includes consultation rooms, rest areas, and a pharmacy. Regular health checkups and awareness programs are conducted here.",
-      images: ["/api/placeholder/400/300", "/api/placeholder/400/300"]
+      images: ["/assets/images/facilities/pexels-abdel-rahman-abu-baker-958112-1920152.jpg", "/assets/images/facilities/pexels-thirdman-8926541.jpg"]
     }
   ];
 

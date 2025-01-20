@@ -39,7 +39,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/academic-calendar"
+                  href="/academics/academic-calendar"
                   className="text-gray-400 hover:text-white"
                 >
                   Academic Calendar

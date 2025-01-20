@@ -1,9 +1,11 @@
 'use client';
+
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import NoticeTicker from '@/components/NoticeTicker';
 import Footer from '@/components/Footer';
 import FeedbackButton from '@/components/FeedbackButton';
+import SocialFollowSection from '@/components/SocialFollowSection';
 import './globals.css';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
@@ -20,8 +22,9 @@ export default function RootLayout({ children }) {
           <main>
             {children}
           </main>
+          <SocialFollowSection /> {/* Added SocialFollowSection */}
           <Footer />
-          <FeedbackButton /> {/* Added FeedbackButton here */}
+          <FeedbackButton />
         </body>
       </html>
     </Provider>
