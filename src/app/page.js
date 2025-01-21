@@ -27,7 +27,7 @@ export const metadata = {
 export default function Home() {
   return (
     <>
-      <main>
+      <main className="landing-page">
         {/* Hero slider */}
         <HeroSlider />
 

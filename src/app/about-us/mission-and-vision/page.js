@@ -39,25 +39,25 @@ const dummyData = {
       icon: "FaGraduationCap",
       color: "text-blue-600",
       title: "Academic Excellence",
-      description: "Commitment to the highest standards of teaching, learning, and scholarly pursuit."
+      description: "Striving for the highest standards of academic achievement and intellectual growth."
     },
     {
       icon: "FaHandHoldingHeart",
-      color: "text-green-600",
-      title: "Compassionate Service",
-      description: "Fostering a culture of empathy, care, and service to others."
+      color: "text-red-600",
+      title: "Social Responsibility",
+      description: "Fostering a commitment to service and positive contribution to society."
     },
     {
       icon: "FaBalanceScale",
-      color: "text-purple-600",
+      color: "text-green-600",
       title: "Ethical Leadership",
-      description: "Developing leaders with strong moral principles and integrity."
+      description: "Developing leaders with strong moral values and integrity."
     },
     {
       icon: "FaGlobe",
-      color: "text-red-600",
+      color: "text-purple-600",
       title: "Global Perspective",
-      description: "Embracing diversity and preparing students for global citizenship."
+      description: "Cultivating awareness and understanding of global issues and cultures."
     }
   ]
 };
