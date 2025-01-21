@@ -13,7 +13,7 @@ export default function Navbar() {
     
     {
       title: "Academics",
-      submenu: ["Programs Offered", "Curriculum", "Academic Calendar", "Departments", "Syllabus"],
+      submenu: ["Rules & Regulations", "Curriculum", "Academic Calendar", "Examination System"],
     },
     {
       title: "Admissions",
