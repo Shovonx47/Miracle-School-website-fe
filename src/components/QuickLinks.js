@@ -2,7 +2,7 @@ export default function QuickLinks() {
   const links = [
     { title: "Online Admission", url: "/admissions/admission-process" },
     { title: "Academic Calendar", url: "/academics/academic-calendar" },
-    { title: "Photo Gallery", url: "/photo-gallery" },
+    { title: "Photo Gallery", url: "/academics/photo-gallery" },
     { title: "Contact Us", url: "/contact-us/contact-information" }
   ];
 
