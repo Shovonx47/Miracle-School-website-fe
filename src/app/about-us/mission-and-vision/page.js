@@ -1,9 +1,6 @@
 'use client';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import { FaLightbulb, FaCrosshairs, FaGraduationCap, FaHandHoldingHeart, FaBalanceScale, FaGlobe } from 'react-icons/fa';
-import { fetchMissionVision } from '@/redux/features/missionVisionSlice';
 
 const iconMap = {
   FaLightbulb,
@@ -14,25 +11,59 @@ const iconMap = {
   FaGlobe,
 };
 
+// Dummy data
+const dummyData = {
+  hero: {
+    image: "/assets/images/mv/national-cancer-institute-N_aihp118p8-unsplash.jpg",
+    title: "Mission, Vision & Values",
+    subtitle: "Building tomorrow's leaders through excellence in education, research, and character development."
+  },
+  mission: {
+    description: "Notre Dame College is committed to providing exceptional education that empowers students to become leaders in their chosen fields while maintaining high ethical standards and contributing positively to society.",
+    points: [
+      "Deliver excellence in education through innovative teaching methods and comprehensive curricula",
+      "Foster critical thinking and creative problem-solving skills",
+      "Promote research and scholarly activities that advance knowledge",
+      "Develop well-rounded individuals prepared for global challenges",
+      "Maintain strong community partnerships for experiential learning"
+    ],
+    image: "/assets/images/mv/yan-berthemy-TRrBszDmuWE-unsplash.jpg"
+  },
+  vision: {
+    description: "We envision Notre Dame College as a leading institution of higher education, recognized globally for academic excellence, innovative research, and the development of ethical leaders who make meaningful contributions to society.",
+    quote: "Shaping minds, building character, and inspiring innovation for a better tomorrow.",
+    image: "/assets/images/mv/national-cancer-institute-N_aihp118p8-unsplash.jpg"
+  },
+  coreValues: [
+    {
+      icon: "FaGraduationCap",
+      color: "text-blue-600",
+      title: "Academic Excellence",
+      description: "Commitment to the highest standards of teaching, learning, and scholarly pursuit."
+    },
+    {
+      icon: "FaHandHoldingHeart",
+      color: "text-green-600",
+      title: "Compassionate Service",
+      description: "Fostering a culture of empathy, care, and service to others."
+    },
+    {
+      icon: "FaBalanceScale",
+      color: "text-purple-600",
+      title: "Ethical Leadership",
+      description: "Developing leaders with strong moral principles and integrity."
+    },
+    {
+      icon: "FaGlobe",
+      color: "text-red-600",
+      title: "Global Perspective",
+      description: "Embracing diversity and preparing students for global citizenship."
+    }
+  ]
+};
+
 export default function MissionVisionPage() {
-  const dispatch = useDispatch();
-  const { data, isLoading, error } = useSelector((state) => state.missionVision);
-
-  useEffect(() => {
-    dispatch(fetchMissionVision());
-  }, [dispatch]);
-
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
-  }
-
-  if (!data) {
-    return null;
-  }
+  const data = dummyData;
 
   return (
     <div className="space-y-16">
@@ -138,4 +169,4 @@ export default function MissionVisionPage() {
       </section>
     </div>
   );
-} 
+}

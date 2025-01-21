@@ -1,9 +1,79 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import { facultyData } from '@/data/facultyData';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Dummy data
+const dummyFacultyData = [
+  {
+    name: "Dr. Sarah Johnson",
+    designation: "Principal",
+    department: "Mathematics",
+    phone: "+1 (555) 123-4567",
+    image: "/assets/images/poeple/man-portrait-posing-loft-modern-space.jpg",
+    education: [
+      "Ph.D. in Mathematics, MIT",
+      "M.Sc. in Applied Mathematics, Stanford University",
+      "B.Sc. in Mathematics, Harvard University"
+    ],
+    experience: [
+      "Principal, ABC College (2018-Present)",
+      "Professor of Mathematics, XYZ University (2010-2018)",
+      "Associate Professor, DEF College (2005-2010)"
+    ],
+    classes: [
+      "Advanced Calculus",
+      "Linear Algebra",
+      "Number Theory"
+    ],
+    biography: "Dr. Sarah Johnson is a distinguished mathematician with over 20 years of experience in academia..."
+  },
+  {
+    name: "Prof. Michael Chen",
+    designation: "Professor",
+    department: "Physics",
+    phone: "+1 (555) 234-5678",
+    image: "/assets/images/poeple/portrait-confident-young-businessman-with-his-arms-crossed.jpg",
+    education: [
+      "Ph.D. in Physics, CalTech",
+      "M.Sc. in Theoretical Physics, Berkeley",
+      "B.Sc. in Physics, Princeton"
+    ],
+    experience: [
+      "Professor of Physics (2015-Present)",
+      "Research Scientist, CERN (2010-2015)",
+      "Assistant Professor, GHI University (2005-2010)"
+    ],
+    classes: [
+      "Quantum Mechanics",
+      "Particle Physics",
+      "Classical Mechanics"
+    ],
+    biography: "Prof. Michael Chen is a renowned physicist specializing in quantum mechanics..."
+  },
+  {
+    name: "Dr. Emily Brown",
+    designation: "Associate Professor",
+    department: "Chemistry",
+    phone: "+1 (555) 345-6789",
+    image: "/assets/images/poeple/portrait-confident-young-businessman-with-his-arms-crossed.jpg",
+    education: [
+      "Ph.D. in Chemistry, Oxford University",
+      "M.Sc. in Organic Chemistry, Cambridge University",
+      "B.Sc. in Chemistry, Imperial College London"
+    ],
+    experience: [
+      "Associate Professor (2018-Present)",
+      "Research Lead, Pharmaceutical Company (2012-2018)",
+      "Assistant Professor (2008-2012)"
+    ],
+    classes: [
+      "Organic Chemistry",
+      "Biochemistry",
+      "Analytical Chemistry"
+    ],
+    biography: "Dr. Emily Brown is an expert in organic chemistry with extensive research experience..."
+  }
+];
 
 // Loading component
 function Loading() {
@@ -49,9 +119,6 @@ export default function FacultyStaffPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [facultyData, setFacultyData] = useState([]);
 
   const departments = [
     'All Departments',
@@ -63,31 +130,7 @@ export default function FacultyStaffPage() {
     'Bengali',
   ];
 
-  // Fetch faculty data based on selected department and search term
-  useEffect(() => {
-    const fetchFaculty = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          `${API_URL}/faculty?department=${selectedDepartment}&search=${searchTerm}`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setFacultyData(data.data);
-        } else {
-          setError('Failed to fetch faculty data');
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchFaculty();
-  }, [selectedDepartment, searchTerm]);
-
-  const filteredFaculty = facultyData.filter(faculty => {
+  const filteredFaculty = dummyFacultyData.filter(faculty => {
     const matchesSearch = faculty.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDepartment = selectedDepartment === 'all' || 
                              faculty.department.toLowerCase() === selectedDepartment.toLowerCase();
@@ -180,9 +223,6 @@ export default function FacultyStaffPage() {
       </div>
     );
   };
-
-  if (isLoading) return <Loading />;
-  if (error) return <Error error={error} reset={() => setError(null)} />;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
