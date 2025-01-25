@@ -65,18 +65,28 @@ export default function FacultyStaffPage() {
     const fetchFacultyData = async () => {
       try {
         console.log('Fetching faculty data...');
-        // Using the direct API URL for now
         const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/faculty', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
+          mode: 'cors',
+          credentials: 'omit'
         });
+        
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          console.error('Error response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
         }
+        
         const data = await response.json();
         console.log('Received data:', data);
+        
         if (data.success) {
           setFacultyData(data.data);
         } else {
