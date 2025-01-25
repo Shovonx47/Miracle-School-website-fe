@@ -64,15 +64,22 @@ export default function FacultyStaffPage() {
   useEffect(() => {
     const fetchFacultyData = async () => {
       try {
+        console.log('Fetching faculty data...');
         const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/faculty');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
+        console.log('Received data:', data);
         if (data.success) {
           setFacultyData(data.data);
         } else {
-          setError('Failed to fetch data');
+          console.error('API returned success: false', data);
+          setError('Failed to fetch data: ' + (data.message || 'Unknown error'));
         }
       } catch (err) {
-        setError('Failed to fetch data');
+        console.error('Error fetching faculty data:', err);
+        setError(`Failed to fetch data: ${err.message}`);
       } finally {
         setLoading(false);
       }
