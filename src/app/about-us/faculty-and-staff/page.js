@@ -69,9 +69,8 @@ export default function FacultyStaffPage() {
         
         const response = await fetch(API_URL, {
           method: 'GET',
-          mode: 'no-cors', // This is a temporary workaround
           headers: {
-            'Accept': 'application/json',
+            'Accept': 'application/json'
           }
         });
         
@@ -80,14 +79,6 @@ export default function FacultyStaffPage() {
           statusText: response.statusText,
           type: response.type
         });
-
-        if (response.type === 'opaque') {
-          console.log('Received opaque response due to no-cors mode');
-          // In no-cors mode, we cannot read the response
-          // You'll need to fix the backend CORS configuration
-          setError('Unable to read API response. Please configure CORS on the backend.');
-          return;
-        }
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
