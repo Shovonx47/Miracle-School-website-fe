@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { FaLightbulb, FaCrosshairs, FaGraduationCap, FaHandHoldingHeart, FaBalanceScale, FaGlobe } from 'react-icons/fa';
 
 const iconMap = {
@@ -11,59 +12,23 @@ const iconMap = {
   FaGlobe,
 };
 
-// Dummy data
-const dummyData = {
-  hero: {
-    image: "/assets/images/mv/national-cancer-institute-N_aihp118p8-unsplash.jpg",
-    title: "Mission, Vision & Values",
-    subtitle: "Building tomorrow's leaders through excellence in education, research, and character development."
-  },
-  mission: {
-    description: "Notre Dame College is committed to providing exceptional education that empowers students to become leaders in their chosen fields while maintaining high ethical standards and contributing positively to society.",
-    points: [
-      "Deliver excellence in education through innovative teaching methods and comprehensive curricula",
-      "Foster critical thinking and creative problem-solving skills",
-      "Promote research and scholarly activities that advance knowledge",
-      "Develop well-rounded individuals prepared for global challenges",
-      "Maintain strong community partnerships for experiential learning"
-    ],
-    image: "/assets/images/mv/yan-berthemy-TRrBszDmuWE-unsplash.jpg"
-  },
-  vision: {
-    description: "We envision Notre Dame College as a leading institution of higher education, recognized globally for academic excellence, innovative research, and the development of ethical leaders who make meaningful contributions to society.",
-    quote: "Shaping minds, building character, and inspiring innovation for a better tomorrow.",
-    image: "/assets/images/mv/national-cancer-institute-N_aihp118p8-unsplash.jpg"
-  },
-  coreValues: [
-    {
-      icon: "FaGraduationCap",
-      color: "text-blue-600",
-      title: "Academic Excellence",
-      description: "Striving for the highest standards of academic achievement and intellectual growth."
-    },
-    {
-      icon: "FaHandHoldingHeart",
-      color: "text-red-600",
-      title: "Social Responsibility",
-      description: "Fostering a commitment to service and positive contribution to society."
-    },
-    {
-      icon: "FaBalanceScale",
-      color: "text-green-600",
-      title: "Ethical Leadership",
-      description: "Developing leaders with strong moral values and integrity."
-    },
-    {
-      icon: "FaGlobe",
-      color: "text-purple-600",
-      title: "Global Perspective",
-      description: "Cultivating awareness and understanding of global issues and cultures."
-    }
-  ]
-};
-
 export default function MissionVisionPage() {
-  const data = dummyData;
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/mission-vision');
+      const result = await response.json();
+      setData(result);
+    };
+
+    fetchData();
+  }, []);
+
+  // Show a loading state while fetching data
+  if (!data) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-16">
