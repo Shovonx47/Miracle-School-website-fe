@@ -63,39 +63,66 @@ export default function FacultyStaffPage() {
   // Fetch faculty data from API
   useEffect(() => {
     const fetchFacultyData = async () => {
+      const API_URL = 'https://miracle-school-landing-page-be.vercel.app/api/faculty';
       try {
-        console.log('Fetching faculty data...');
-        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/faculty', {
+        console.log('Starting API request to:', API_URL);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        const response = await fetch(API_URL, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            'Accept': '*/*',
+            'Cache-Control': 'no-cache',
           },
           mode: 'cors',
-          credentials: 'omit'
+          cache: 'no-cache',
+          signal: controller.signal
         });
         
-        console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        clearTimeout(timeoutId);
         
+        console.log('Response received:', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response:', errorText);
-          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+          try {
+            const errorText = await response.text();
+            console.error('Error response body:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+          } catch (textError) {
+            throw new Error(`HTTP error! status: ${response.status}, could not read response body`);
+          }
         }
-        
-        const data = await response.json();
-        console.log('Received data:', data);
-        
-        if (data.success) {
-          setFacultyData(data.data);
-        } else {
-          console.error('API returned success: false', data);
-          setError('Failed to fetch data: ' + (data.message || 'Unknown error'));
+
+        let responseText;
+        try {
+          responseText = await response.text();
+          console.log('Raw response text:', responseText);
+          const data = JSON.parse(responseText);
+          console.log('Parsed data:', data);
+          
+          if (data.success) {
+            setFacultyData(data.data);
+          } else {
+            throw new Error(data.message || 'API returned success: false');
+          }
+        } catch (parseError) {
+          console.error('Failed to parse response:', parseError);
+          console.error('Response text was:', responseText);
+          throw new Error('Failed to parse API response');
         }
       } catch (err) {
-        console.error('Error fetching faculty data:', err);
-        setError(`Failed to fetch data: ${err.message}`);
+        console.error('Error in fetchFacultyData:', err);
+        if (err.name === 'AbortError') {
+          setError('Request timed out after 30 seconds');
+        } else {
+          setError(`Failed to fetch data: ${err.message}`);
+        }
       } finally {
         setLoading(false);
       }
