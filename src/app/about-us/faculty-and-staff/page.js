@@ -67,62 +67,43 @@ export default function FacultyStaffPage() {
       try {
         console.log('Starting API request to:', API_URL);
         
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-        
         const response = await fetch(API_URL, {
           method: 'GET',
+          mode: 'no-cors', // This is a temporary workaround
           headers: {
-            'Accept': '*/*',
-            'Cache-Control': 'no-cache',
-          },
-          mode: 'cors',
-          cache: 'no-cache',
-          signal: controller.signal
+            'Accept': 'application/json',
+          }
         });
-        
-        clearTimeout(timeoutId);
         
         console.log('Response received:', {
           status: response.status,
           statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries())
+          type: response.type
         });
 
-        if (!response.ok) {
-          try {
-            const errorText = await response.text();
-            console.error('Error response body:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
-          } catch (textError) {
-            throw new Error(`HTTP error! status: ${response.status}, could not read response body`);
-          }
+        if (response.type === 'opaque') {
+          console.log('Received opaque response due to no-cors mode');
+          // In no-cors mode, we cannot read the response
+          // You'll need to fix the backend CORS configuration
+          setError('Unable to read API response. Please configure CORS on the backend.');
+          return;
         }
 
-        let responseText;
-        try {
-          responseText = await response.text();
-          console.log('Raw response text:', responseText);
-          const data = JSON.parse(responseText);
-          console.log('Parsed data:', data);
-          
-          if (data.success) {
-            setFacultyData(data.data);
-          } else {
-            throw new Error(data.message || 'API returned success: false');
-          }
-        } catch (parseError) {
-          console.error('Failed to parse response:', parseError);
-          console.error('Response text was:', responseText);
-          throw new Error('Failed to parse API response');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Parsed data:', data);
+        
+        if (data.success) {
+          setFacultyData(data.data);
+        } else {
+          throw new Error(data.message || 'API returned success: false');
         }
       } catch (err) {
         console.error('Error in fetchFacultyData:', err);
-        if (err.name === 'AbortError') {
-          setError('Request timed out after 30 seconds');
-        } else {
-          setError(`Failed to fetch data: ${err.message}`);
-        }
+        setError(`Failed to fetch data: ${err.message}`);
       } finally {
         setLoading(false);
       }
