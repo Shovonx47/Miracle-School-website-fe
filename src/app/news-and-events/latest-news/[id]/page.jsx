@@ -1,122 +1,57 @@
 "use client";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function NewsArticle({ params }) {
   const router = useRouter();
-  
-  const news = [
-    {
-      id: 'annual-sports-day-2024',
-      date: "March 15, 2024",
-      title: "Annual Sports Day",
-      description: "Join us for our annual sports day celebration featuring various competitions.",
-      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
-      category: "Sports",
-      content: `
-        <p>We are excited to announce our upcoming Annual Sports Day, a celebration of athletic excellence and school spirit. This year's event promises to be bigger and better than ever before.</p>
+  const [news, setNews] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-        <h2>Event Details</h2>
-        <p>Date: March 15, 2024<br/>
-        Time: 8:00 AM - 4:00 PM<br/>
-        Venue: School Main Ground</p>
+  useEffect(() => {
+    const fetchNewsArticle = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${params.id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch news article');
+        }
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to fetch news article');
+        }
+        setNews(data.news);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching news article:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        <h2>Featured Events</h2>
-        <ul>
-          <li>100m Sprint</li>
-          <li>Long Jump</li>
-          <li>Relay Race</li>
-          <li>Basketball Tournament</li>
-          <li>Football Match</li>
-        </ul>
+    fetchNewsArticle();
+  }, [params.id]);
 
-        <h2>Schedule</h2>
-        <p>8:00 AM - Opening Ceremony<br/>
-        9:00 AM - Track Events Begin<br/>
-        12:00 PM - Lunch Break<br/>
-        1:00 PM - Field Events<br/>
-        3:30 PM - Prize Distribution</p>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
 
-        <h2>Special Arrangements</h2>
-        <p>We have arranged for refreshments and seating for all parents and guardians. Medical staff will be present throughout the event to ensure safety.</p>
-      `
-    },
-    {
-      id: 'science-fair-2024',
-      date: "March 20, 2024",
-      title: "Science Fair 2024",
-      description: "Students showcase their innovative science projects.",
-      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
-      category: "Academic",
-      content: `
-        <p>Get ready for an exciting showcase of scientific innovation at our annual Science Fair 2024! Students will present their groundbreaking projects and discoveries.</p>
-
-        <h2>Event Details</h2>
-        <p>Date: March 20, 2024<br/>
-        Time: 9:00 AM - 3:00 PM<br/>
-        Venue: School Auditorium</p>
-
-        <h2>Categories</h2>
-        <ul>
-          <li>Environmental Science</li>
-          <li>Robotics & Technology</li>
-          <li>Life Sciences</li>
-          <li>Physical Sciences</li>
-          <li>Mathematics & Computing</li>
-        </ul>
-
-        <h2>Schedule</h2>
-        <p>9:00 AM - Project Setup<br/>
-        10:00 AM - Judging Begins<br/>
-        12:00 PM - Lunch Break<br/>
-        1:00 PM - Public Viewing<br/>
-        2:30 PM - Awards Ceremony</p>
-
-        <h2>Special Features</h2>
-        <p>This year's science fair will include interactive demonstrations, guest speakers from leading research institutions, and special awards for innovative solutions to real-world problems.</p>
-      `
-    },
-    {
-      id: 'cultural-program-2024',
-      date: "March 25, 2024",
-      title: "Cultural Program",
-      description: "Celebrating our rich cultural heritage through performances.",
-      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
-      category: "Culture",
-      content: `
-        <p>Join us for an evening of cultural celebration featuring performances that showcase our diverse heritage and artistic talents.</p>
-
-        <h2>Event Details</h2>
-        <p>Date: March 25, 2024<br/>
-        Time: 5:00 PM - 8:00 PM<br/>
-        Venue: School Auditorium</p>
-
-        <h2>Program Highlights</h2>
-        <ul>
-          <li>Traditional Dance Performances</li>
-          <li>Musical Presentations</li>
-          <li>Drama Productions</li>
-          <li>Poetry Recitations</li>
-          <li>Art Exhibition</li>
-        </ul>
-
-        <h2>Schedule</h2>
-        <p>5:00 PM - Welcome Ceremony<br/>
-        5:30 PM - Cultural Performances Begin<br/>
-        6:30 PM - Intermission & Refreshments<br/>
-        7:00 PM - Second Half of Performances<br/>
-        7:45 PM - Grand Finale</p>
-
-        <h2>Additional Information</h2>
-        <p>Traditional attire is encouraged. Refreshments will be served during the intermission. Photography is permitted during the performances.</p>
-      `
-    }
-  ];
-
-  const article = news.find(item => item.id === params.id) || null;
-
-  if (!article) {
-    return <div>Article not found</div>;
+  if (error || !news) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">Error loading news article: {error || 'Article not found'}</p>
+        <button 
+          onClick={() => router.back()} 
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -140,24 +75,24 @@ export default function NewsArticle({ params }) {
 
           {/* Article Header */}
           <img 
-            src={article.image} 
-            alt={article.title}
+            src={news.image} 
+            alt={news.title}
             className="w-full h-[400px] object-cover rounded-lg mb-8"
           />
           
           <div className="flex items-center gap-4 mb-6">
-            <span className="text-red-600">{article.date}</span>
+            <span className="text-red-600">{news.date}</span>
             <span className="bg-red-50 text-red-600 px-3 py-1 rounded-full">
-              {article.category}
+              {news.category}
             </span>
           </div>
 
-          <h1 className="text-4xl font-bold mb-6">{article.title}</h1>
+          <h1 className="text-4xl font-bold mb-6">{news.title}</h1>
 
           {/* Article Content */}
           <div 
             className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-800 prose-li:text-gray-800 prose-strong:text-gray-900"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: news.content }}
           />
         </motion.div>
 
@@ -197,4 +132,4 @@ export default function NewsArticle({ params }) {
       </div>
     </main>
   );
-} 
+}

@@ -1,34 +1,51 @@
 "use client";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export default function LatestNews() {
-  const news = [
-    {
-      id: 'annual-sports-day-2024',
-      date: "March 15, 2024",
-      title: "Annual Sports Day",
-      description: "Join us for our annual sports day celebration featuring various competitions.",
-      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
-      category: "Sports"
-    },
-    {
-      id: 'science-fair-2024',
-      date: "March 20, 2024",
-      title: "Science Fair 2024",
-      description: "Students showcase their innovative science projects.",
-      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
-      category: "Academic"
-    },
-    {
-      id: 'cultural-program-2024',
-      date: "March 25, 2024",
-      title: "Cultural Program",
-      description: "Celebrating our rich cultural heritage through performances.",
-      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
-      category: "Culture"
-    }
-  ];
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch news');
+        }
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to fetch news');
+        }
+        setNews(data.news || []);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching news:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">Error loading news: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
@@ -60,4 +77,4 @@ export default function LatestNews() {
       ))}
     </div>
   );
-} 
+}
