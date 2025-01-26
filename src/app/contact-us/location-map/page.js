@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import axios from 'axios';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const LocationMap = () => {
   const [schoolLocation, setSchoolLocation] = useState({
@@ -37,7 +38,7 @@ const LocationMap = () => {
     fetchLocation();
   }, []);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
 
   return (

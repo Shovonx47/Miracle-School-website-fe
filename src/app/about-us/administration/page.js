@@ -1,37 +1,34 @@
 "use client";
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function Administration() {
   const [governingBody, setGoverningBody] = useState([]);
   const [latestAlbumImages, setLatestAlbumImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchGoverningBody = async () => {
+    const fetchAdministrationData = async () => {
       try {
-        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/about-us/governing-body');
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/about-us/administration');
+        if (!response.ok) {
+          throw new Error('Failed to fetch administration data');
+        }
         const data = await response.json();
-        setGoverningBody(data);
+        setGoverningBody(data.governingBody);
+        setLatestAlbumImages(data.albumImages);
       } catch (error) {
-        console.error('Error fetching governing body:', error);
+        console.error('Error fetching administration data:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchAlbumImages = async () => {
-      try {
-        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/about-us/album-images');
-        const data = await response.json();
-        setLatestAlbumImages(data);
-      } catch (error) {
-        console.error('Error fetching album images:', error);
-      }
-    };
-
-    fetchGoverningBody();
-    fetchAlbumImages();
-    setLoading(false);
+    fetchAdministrationData();
   }, []);
 
   // Auto-slide effect
@@ -46,7 +43,11 @@ export default function Administration() {
   }, [latestAlbumImages]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 py-8">{error}</div>;
   }
 
   return (

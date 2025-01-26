@@ -1,12 +1,12 @@
 import React from 'react';
 import { useGetLocationQuery } from '../redux/services/apiService';
-import Loading from './Loading';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import Error from './Error';
 
 const Location = () => {
   const { data: location, isLoading, isError } = useGetLocationQuery();
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <Error message="Failed to load location data" />;
 
   return (

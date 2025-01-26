@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function ContactInformation() {
   const [contactData, setContactData] = useState({
@@ -44,7 +45,7 @@ export default function ContactInformation() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading contact information...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

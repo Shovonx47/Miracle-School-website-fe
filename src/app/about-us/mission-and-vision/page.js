@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaLightbulb, FaCrosshairs, FaGraduationCap, FaHandHoldingHeart, FaBalanceScale, FaGlobe } from 'react-icons/fa';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const iconMap = {
   FaLightbulb,
@@ -27,7 +28,7 @@ export default function MissionVisionPage() {
 
   // Show a loading state while fetching data
   if (!data) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return (

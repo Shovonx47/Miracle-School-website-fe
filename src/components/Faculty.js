@@ -1,12 +1,12 @@
 import React from 'react';
 import { useGetAllFacultyQuery } from '../redux/services/apiService';
-import Loading from './Loading';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import Error from './Error';
 
 const Faculty = () => {
   const { data: faculty, isLoading, isError } = useGetAllFacultyQuery();
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <Error message="Failed to load faculty data" />;
 
   return (

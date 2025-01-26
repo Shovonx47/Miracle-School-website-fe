@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function HistoryPage() {
   const [timelineEvents, setTimelineEvents] = useState([]);
@@ -31,7 +32,7 @@ export default function HistoryPage() {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
