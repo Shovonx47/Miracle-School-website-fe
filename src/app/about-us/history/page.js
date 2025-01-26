@@ -1,29 +1,27 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-export const metadata = {
-  title: 'History | Notre Dame College Dhaka',
-  description: 'Explore the rich history and heritage of Notre Dame College Dhaka since its establishment in 1949.',
-};
-
 export default function HistoryPage() {
-  const timelineEvents = [
-    {
-      year: "1949",
-      title: "Establishment",
-      description: "Notre Dame College was established by the Congregation of Holy Cross, marking the beginning of a prestigious educational journey in Dhaka."
-    },
-    {
-      year: "1954",
-      title: "First Graduation",
-      description: "The first batch of students graduated from Notre Dame College, setting a precedent for academic excellence that continues to this day."
-    },
-    {
-      year: "1960",
-      title: "Campus Expansion",
-      description: "Major expansion of college facilities including new academic buildings and laboratories to accommodate growing student population."
-    },
-  ];
+  const [timelineEvents, setTimelineEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTimelineEvents = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/history/timeline-events');
+        const data = await response.json();
+        setTimelineEvents(data);
+      } catch (error) {
+        console.error('Error fetching timeline events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTimelineEvents();
+  }, []);
 
   const stats = [
     { label: "Years of Excellence", value: "74+" },
@@ -31,6 +29,10 @@ export default function HistoryPage() {
     { label: "Faculty Members", value: "200+" },
     { label: "Academic Programs", value: "15+" },
   ];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -3,31 +3,36 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 export default function Administration() {
-  const governingBody = [
-    {
-      name: "Brigadier General Md Shahadat Sikder, ndc, afwc, psc",
-      position: "Chairman",
-      description: "Governing Body, Birshreshtha Noor Mohammad Public College & Additional Director General Headquarters Border Guard Bangladesh",
-      image: "/assets/images/poeple/inspiring-new-boss.jpg" // Add actual image path
-    },
-    {
-      name: "Sharif Ahmed Chowdhury",
-      position: "Member, Teacher Representative",
-      description: "Governing Body, Birshreshtha Noor Mohammad Public College Peelkhana, Dhaka.",
-      image: "/assets/images/poeple/office-happy-man-work.jpg" // Add actual image path
-    },
-    // ... Add other members similarly
-  ];
-
+  const [governingBody, setGoverningBody] = useState([]);
+  const [latestAlbumImages, setLatestAlbumImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  const latestAlbumImages = [
-    '/assets/images/Buildings/low-rise-building.jpg',
-    '/assets/images/Buildings/shot-train-station-roof-with-clocks-showing-quarter-three.jpg',
-    '/assets/images/mv/yan-berthemy-TRrBszDmuWE-unsplash.jpg',
-    '/assets/images/Buildings/analog-landscape-city-with-buildings.jpg',
-    // Add more images as needed
-  ];
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGoverningBody = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/about-us/governing-body');
+        const data = await response.json();
+        setGoverningBody(data);
+      } catch (error) {
+        console.error('Error fetching governing body:', error);
+      }
+    };
+
+    const fetchAlbumImages = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/about-us/album-images');
+        const data = await response.json();
+        setLatestAlbumImages(data);
+      } catch (error) {
+        console.error('Error fetching album images:', error);
+      }
+    };
+
+    fetchGoverningBody();
+    fetchAlbumImages();
+    setLoading(false);
+  }, []);
 
   // Auto-slide effect
   useEffect(() => {
@@ -38,7 +43,11 @@ export default function Administration() {
     }, 3000); // Change slide every 3 seconds
 
     return () => clearInterval(timer);
-  }, []);
+  }, [latestAlbumImages]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -49,7 +58,7 @@ export default function Administration() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {governingBody.map((member, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div key={member._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="aspect-w-3 aspect-h-4">
                 <div className="relative h-64 w-full">
                   <Image
@@ -106,7 +115,7 @@ export default function Administration() {
                   }`}
                 >
                   <Image
-                    src={image}
+                    src={image.url}
                     alt={`Slide ${index + 1}`}
                     fill
                     className="object-cover rounded-lg"
@@ -132,4 +141,4 @@ export default function Administration() {
       </div>
     </div>
   );
-} 
+}
