@@ -107,6 +107,7 @@ export default function UpcomingEvents() {
           </Link>
         ))}
       </div>
+
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex justify-between items-center mt-6">
