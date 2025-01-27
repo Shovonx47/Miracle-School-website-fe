@@ -1,286 +1,138 @@
-"use client";
-import { useState, useEffect } from 'react';
+'use client';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { FaLightbulb, FaCrosshairs, FaGraduationCap, FaHandHoldingHeart, FaBalanceScale, FaGlobe } from 'react-icons/fa';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-// Loading component
-function Loading() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-8"></div>
-        <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
-          <div className="md:w-1/3 h-10 bg-gray-200 rounded"></div>
-          <div className="md:w-1/4 h-10 bg-gray-200 rounded"></div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="w-52 bg-gray-200 rounded-lg h-72"></div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+const iconMap = {
+  FaLightbulb,
+  FaCrosshairs,
+  FaGraduationCap,
+  FaHandHoldingHeart,
+  FaBalanceScale,
+  FaGlobe,
+};
 
-// Error component
-function Error({ error, reset }) {
-  return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Something went wrong!
-        </h2>
-        <button
-          onClick={() => reset()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
-  );
-}
+export default function MissionVisionPage() {
+  const [data, setData] = useState(null);
 
-// Main page component
-export default function FacultyStaffPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [facultyData, setFacultyData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const departments = [
-    'All Departments',
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'English',
-    'Bengali',
-  ];
-
-  // Fetch faculty data from API
   useEffect(() => {
-    const fetchFacultyData = async () => {
-      const API_URL = 'https://miracle-school-landing-page-be.vercel.app/api/faculty';
-      try {
-        console.log('Starting API request to:', API_URL);
-        
-        const response = await fetch(API_URL, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        console.log('Response received:', {
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Parsed data:', data);
-        
-        if (data.success) {
-          setFacultyData(data.data);
-        } else {
-          throw new Error(data.message || 'API returned success: false');
-        }
-      } catch (err) {
-        console.error('Error in fetchFacultyData:', err);
-        setError(`Failed to fetch data: ${err.message}`);
-      } finally {
-        setLoading(false);
-      }
+    const fetchData = async () => {
+      const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/mission-vision');
+      const result = await response.json();
+      setData(result);
     };
 
-    fetchFacultyData();
+    fetchData();
   }, []);
 
-  const filteredFaculty = facultyData.filter(faculty => {
-    const matchesSearch = faculty.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDepartment = selectedDepartment === 'all' || 
-                             faculty.department.toLowerCase() === selectedDepartment.toLowerCase();
-    return matchesSearch && matchesDepartment;
-  });
-
-  // Group faculty by designation
-  const groupedFaculty = filteredFaculty.reduce((acc, faculty) => {
-    if (!acc[faculty.designation]) {
-      acc[faculty.designation] = [];
-    }
-    acc[faculty.designation].push(faculty);
-    return acc;
-  }, {});
-
-  // Define designation order (hierarchy)
-  const designationOrder = [
-    'Principal',
-    'Vice Principal',
-    'Professor',
-    'Associate Professor',
-    'Assistant Professor',
-    'Senior Lecturer',
-    'Lecturer'
-  ];
-
-  // Modal component
-  const FacultyModal = ({ faculty, onClose }) => {
-    return (
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-        onClick={onClose}
-      >
-        <div 
-          className="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-y-auto m-4"
-          onClick={e => e.stopPropagation()}
-        >
-          <div className="flex items-center space-x-6 mb-6">
-            <div className="relative w-32 h-32">
-              <Image
-                src={faculty.image}
-                alt={faculty.name}
-                fill
-                className="object-cover rounded-lg"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">{faculty.name}</h2>
-              <p className="text-blue-600 font-medium">{faculty.designation}</p>
-              <p className="text-gray-600">{faculty.department}</p>
-              <p className="text-gray-600">{faculty.phone}</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Education</h3>
-              <ul className="list-disc list-inside space-y-2">
-                {faculty.education?.map((edu, index) => (
-                  <li key={index} className="text-gray-600">{edu}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Professional Experience</h3>
-              <ul className="list-disc list-inside space-y-2">
-                {faculty.experience?.map((exp, index) => (
-                  <li key={index} className="text-gray-600">{exp}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Current Classes</h3>
-              <ul className="list-disc list-inside space-y-2">
-                {faculty.classes?.map((cls, index) => (
-                  <li key={index} className="text-gray-600">{cls}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Biography</h3>
-              <p className="text-gray-600 leading-relaxed">{faculty.biography}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  if (loading) return <Loading />;
-  if (error) return <Error error={error} reset={() => setError(null)} />;
+  // Show a loading state while fetching data
+  if (!data) {
+    return <LoadingSpinner />;
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Faculty & Staff</h1>
-      
-      <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
-        <div className="md:w-1/3">
-          <input
-            type="text"
-            placeholder="Search by name..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="md:w-1/4">
-          <select
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-          >
-            {departments.map((dept) => (
-              <option key={dept} value={dept.toLowerCase()}>
-                {dept}
-              </option>
-            ))}
-          </select>
+    <div className="space-y-16">
+      {/* Hero Section */}
+      <div className="relative h-[400px] rounded-xl overflow-hidden">
+        <Image
+          src={data.hero.image}
+          alt="Notre Dame College Campus"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-black/50 flex items-center">
+          <div className="max-w-7xl mx-auto px-6 w-full">
+            <h1 className="text-5xl font-bold text-white mb-4">{data.hero.title}</h1>
+            <p className="text-xl text-gray-100 max-w-2xl">
+              {data.hero.subtitle}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-12">
-        {designationOrder.map((designation) => {
-          const facultyGroup = groupedFaculty[designation] || [];
-          if (facultyGroup.length === 0) return null;
-
-          return (
-            <div key={designation} className="flex flex-col items-center">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                {designation}{facultyGroup.length > 1 ? 's' : ''}
-              </h2>
-              <div className="flex flex-wrap justify-center gap-6 max-w-6xl">
-                {facultyGroup.map((faculty, index) => (
-                  <div
-                    key={index}
-                    className="w-52 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow text-center cursor-pointer"
-                    onClick={() => setSelectedFaculty(faculty)}
-                  >
-                    <div className="aspect-square relative">
-                      <Image
-                        src={faculty.image}
-                        alt={faculty.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-3 flex flex-col items-center">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-1 text-center">{faculty.name}</h3>
-                      <p className="text-blue-600 font-medium mb-1 text-sm text-center">{faculty.designation}</p>
-                      <p className="text-gray-600 mb-1 text-sm text-center">{faculty.department}</p>
-                      <p className="text-gray-600 text-xs text-center">{faculty.phone}</p>
-                    </div>
-                  </div>
+      {/* Mission Section */}
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            <div className="p-8 lg:p-12">
+              <div className="flex items-center gap-3 mb-6">
+                <FaCrosshairs className="text-3xl text-blue-600" />
+                <h2 className="text-3xl font-bold text-gray-800">Our Mission</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed text-lg mb-6">
+                {data.mission.description}
+              </p>
+              <ul className="space-y-4">
+                {data.mission.points.map((point, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="mt-1 text-blue-600">•</span>
+                    <span className="text-gray-600">{point}</span>
+                  </li>
                 ))}
+              </ul>
+            </div>
+            <div className="relative h-full min-h-[300px]">
+              <Image
+                src={data.mission.image}
+                alt="Students in library"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vision Section */}
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="grid md:grid-cols-2">
+            <div className="relative h-full min-h-[300px] md:order-2">
+              <Image
+                src={data.vision.image}
+                alt="Campus Life"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="p-8 lg:p-12 md:order-1">
+              <div className="flex items-center gap-3 mb-6">
+                <FaLightbulb className="text-3xl text-blue-600" />
+                <h2 className="text-3xl font-bold text-gray-800">Our Vision</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed text-lg mb-6">
+                {data.vision.description}
+              </p>
+              <div className="bg-blue-50 p-6 rounded-lg border border-blue-100">
+                <p className="text-blue-800 italic">
+                  {data.vision.quote}
+                </p>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {selectedFaculty && (
-        <FacultyModal 
-          faculty={selectedFaculty} 
-          onClose={() => setSelectedFaculty(null)} 
-        />
-      )}
-
-      {Object.keys(groupedFaculty).length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No faculty members found matching your search criteria.</p>
+          </div>
         </div>
-      )}
+      </section>
+
+      {/* Core Values */}
+      <section className="max-w-7xl mx-auto px-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Core Values</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {data.coreValues.map((value, index) => {
+            const Icon = iconMap[value.icon];
+            return (
+              <div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div className={`${value.color} text-4xl mb-4`}>
+                  <Icon />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">{value.title}</h3>
+                <p className="text-gray-600">{value.description}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }
