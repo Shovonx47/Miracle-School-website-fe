@@ -18,8 +18,11 @@ export default function Administration() {
           throw new Error('Failed to fetch administration data');
         }
         const data = await response.json();
-        setGoverningBody(data.governingBody);
-        setLatestAlbumImages(data.albumImages);
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to fetch administration data');
+        }
+        setGoverningBody(data.data.governingBody || []);
+        setLatestAlbumImages(data.data.albumImages || []);
       } catch (error) {
         console.error('Error fetching administration data:', error);
         setError(error.message);
