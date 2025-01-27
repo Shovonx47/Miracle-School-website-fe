@@ -5,27 +5,33 @@ export default function Notices() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [notices, setNotices] = useState([
-    {
-      id: 1,
-      title: "অনুষ্ঠানসূচি; ৭৫ বছর পূর্তি উৎসবের সমাপন...",
-      publishDate: "12/12/2024",
-      pdfUrl: "/pdfs/notice1.pdf"
-    },
-    {
-      id: 2,
-      title: "এইচএসসি ২০২৪ বোর্ড পরীক্ষায় উত্তীর্ণ শিক...",
-      publishDate: "12/12/2024",
-      pdfUrl: "/pdfs/notice2.pdf"
-    },
-    {
-      id: 3,
-      title: "৭৫ বছর পূর্তি উৎসবের সমাপনী অনুষ্ঠান রেজ...",
-      publishDate: "12/11/2024",
-      pdfUrl: "/pdfs/notice3.pdf"
-    },
-    // ... other notices ...
-  ]);
+  const [notices, setNotices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news?category=Notice');
+        if (!response.ok) {
+          throw new Error('Failed to fetch notices');
+        }
+        const data = await response.json();
+        if (data.success) {
+          setNotices(data.news);
+        } else {
+          throw new Error('Failed to get notices from response');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotices();
+  }, []);
 
   // Filter notices based on search term
   const filteredNotices = notices.filter(notice =>
@@ -37,6 +43,26 @@ export default function Notices() {
   const indexOfFirstNotice = indexOfLastNotice - rowsPerPage;
   const currentNotices = filteredNotices.slice(indexOfFirstNotice, indexOfLastNotice);
   const totalPages = Math.ceil(filteredNotices.length / rowsPerPage);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p>Error loading notices: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -83,19 +109,18 @@ export default function Notices() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {currentNotices.map((notice) => (
-              <tr key={notice.id}>
+              <tr key={notice._id}>
                 <td className="px-6 py-4 whitespace-nowrap">{notice.title}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{notice.publishDate}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{notice.date}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-  <a
-    href="/assets/files/Profile-AP5-06.12.24-new-address.pdf"
-    download
-    className="text-blue-600 hover:text-blue-800"
-  >
-    Download PDF
-  </a>
-</td>
-
+                  <a
+                    href={notice.pdfUrl}
+                    download
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Download PDF
+                  </a>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -126,4 +151,4 @@ export default function Notices() {
       </div>
     </div>
   );
-} 
+}
