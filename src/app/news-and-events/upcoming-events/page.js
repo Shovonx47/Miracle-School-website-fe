@@ -1,55 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
 
 export default function UpcomingEvents() {
-  const allEvents = [
-    {
-      title: "75th Anniversary Celebration",
-      date: "December 15, 2024",
-      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
-      description:
-        "Notre Dame College celebrated its 75th anniversary with great enthusiasm...",
-    },
-    {
-      title: "Science Fair 2024",
-      date: "November 28, 2024",
-      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
-      description:
-        "Annual Science Fair showcasing innovative projects from our talented students...",
-    },
-    {
-      title: "Cultural Program",
-      date: "November 15, 2024",
-      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
-      description:
-        "Students performed traditional and modern cultural programs...",
-    },
-    {
-      title: "Sports Week 2024",
-      date: "December 20, 2024",
-      image: "/assets/images/banners/sports-week.jpg",
-      description:
-        "Annual sports week featuring various athletic competitions and team events...",
-    },
-    {
-      title: "Alumni Meet 2025",
-      date: "January 15, 2025",
-      image: "/assets/images/banners/alumni-meet.jpg",
-      description:
-        "Yearly alumni gathering to celebrate achievements and strengthen connections...",
-    },
-    // Add more events as needed
-  ];
-
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const eventsPerPage = 6;
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news?category=Event');
+        const data = await response.json();
+        
+        if (data.success) {
+          setEvents(data.news);
+        } else {
+          throw new Error('Failed to fetch events');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   // Filtered events based on search query
-  const filteredEvents = allEvents.filter((event) =>
+  const filteredEvents = events.filter((event) =>
     event.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -69,6 +54,14 @@ export default function UpcomingEvents() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+  if (loading) {
+    return <div className="container mx-auto px-4 py-8">Loading events...</div>;
+  }
+
+  if (error) {
+    return <div className="container mx-auto px-4 py-8 text-red-600">Error: {error}</div>;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">All Events</h1>
@@ -82,10 +75,10 @@ export default function UpcomingEvents() {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentEvents.map((event, index) => (
+        {currentEvents.map((event) => (
           <Link
-            key={index}
-            href={`/news-and-events/upcoming-events/${encodeURIComponent(event.title.toLowerCase().replace(/ /g, '-'))}`}
+            key={event._id}
+            href={`/news-and-events/upcoming-events/${event.id}`}
             className="rounded-lg overflow-hidden shadow-md bg-white transition-transform hover:scale-105"
           >
             <div className="relative h-48">
