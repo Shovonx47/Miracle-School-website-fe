@@ -11,7 +11,7 @@ export default function LatestNews() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news`);
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news');
         if (!response.ok) {
           throw new Error('Failed to fetch news');
         }
