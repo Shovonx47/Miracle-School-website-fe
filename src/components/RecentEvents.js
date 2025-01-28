@@ -1,36 +1,35 @@
+"use client";
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export default function RecentEvents() {
-  const events = [
-    {
-      title: "75th Anniversary Celebration",
-      date: "December 15, 2024",
-      image: "/assets/images/banners/pexels-goumbik-296301.jpg",
-      description: "Notre Dame College celebrated its 75th anniversary with great enthusiasm..."
-    },
-    {
-      title: "Science Fair 2024",
-      date: "November 28, 2024",
-      image: "/assets/images/banners/pexels-rdne-7606209.jpg",
-      description: "Annual Science Fair showcasing innovative projects from our talented students..."
-    },
-    {
-      title: "Cultural Program",
-      date: "November 15, 2024",
-      image: "/assets/images/banners/pexels-su-casa-panama-56317556-9650298.jpg",
-      description: "Students performed traditional and modern cultural programs..."
-    }
-  ];
+const RecentEvents = () => {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news?category=Event');
+        const data = await response.json();
+        // Take the last 3 events from the news array
+        setEvents(data.news.slice(-3));
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
       <h2 className="text-2xl font-bold mb-6">Recent Events</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map((event, index) => (
+        {events.map((event) => (
           <Link
-            key={index}
-            href={`/news-and-events/upcoming-events/${encodeURIComponent(event.title.toLowerCase().replace(/ /g, '-'))}`}
+            key={event._id}
+            href={`/news-and-events/upcoming-events/${encodeURIComponent(event.id)}`}
             className="rounded-lg overflow-hidden shadow-md transition-transform hover:scale-105"
           >
             <div className="relative h-48">
@@ -61,4 +60,6 @@ export default function RecentEvents() {
       </div>
     </div>
   );
-} 
+};
+
+export default RecentEvents;
