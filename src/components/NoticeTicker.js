@@ -1,12 +1,31 @@
 "use client";
 import { FaBullhorn } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
 
 export default function NoticeTicker() {
-  const notices = [
-    "২০২৫ শিক্ষাবর্ষে ১ম শ্রেণিতে লটারির মাধ্যমে নির্বাচিত শিক্ষার্থীদের চূড়ান্ত ফলাফল",
-    "অনলাইনে নতুন ছাত্র ভর্তি ‍ও টিউশন ফি প্রদানের নিয়মাবলি",
-    "অনলাইনে টিউশন ফি প্রদানের ক্ষেত্রে লগইন আইডির ঘরে ছাত্র আইডি",
-  ];
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news?category=Notice');
+        const data = await response.json();
+        // Extract titles from the API response
+        const noticeTitles = data.map(notice => notice.title);
+        setNotices(noticeTitles);
+      } catch (error) {
+        console.error('Error fetching notices:', error);
+        // Fallback data in case of error
+        setNotices([
+          "২০২৫ শিক্ষাবর্ষে ১ম শ্রেণিতে লটারির মাধ্যমে নির্বাচিত শিক্ষার্থীদের চূড়ান্ত ফলাফল",
+          "অনলাইনে নতুন ছাত্র ভর্তি ‍ও টিউশন ফি প্রদানের নিয়মাবলি",
+          "অনলাইনে টিউশন ফি প্রদানের ক্ষেত্রে লগইন আইডির ঘরে ছাত্র আইডি",
+        ]);
+      }
+    };
+
+    fetchNotices();
+  }, []);
 
   return (
     <div className="bg-[#f8f9fa] border-b border-gray-200">
@@ -34,4 +53,4 @@ export default function NoticeTicker() {
       </div>
     </div>
   );
-} 
+}
