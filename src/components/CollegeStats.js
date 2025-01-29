@@ -1,10 +1,31 @@
+"use client";
+import { useState, useEffect } from "react";
+
 export default function CollegeStats() {
-  const stats = [
-    { label: "Students", value: "6000+" },
-    { label: "Teachers", value: "200+" },
-    { label: "Staff Members", value: "100+" },
-    { label: "Years of Excellence", value: "75+" }
-  ];
+  const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/college-stats`);
+        const data = await response.json();
+        if (data.success) {
+          setStats(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching college stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return <div className="bg-blue-600 text-white rounded-lg p-8 my-8">Loading...</div>;
+  }
 
   return (
     <div className="bg-blue-600 text-white rounded-lg p-8 my-8">
@@ -18,4 +39,4 @@ export default function CollegeStats() {
       </div>
     </div>
   );
-} 
+}

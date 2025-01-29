@@ -1,26 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function PrincipalMessage() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [principalData, setPrincipalData] = useState({
+    name: "",
+    title: "",
+    message: "",
+    imageUrl: ""
+  });
+  const [loading, setLoading] = useState(true);
 
-  const fullMessage = `
-    Notre Dame College, Dhaka is one of the most renowned educational institutions in Bangladesh. 
-    Since its inception in 1949, it has been maintaining excellence in academic performance, 
-    discipline, and character formation. 
-    The college emphasizes not only academic achievements but also the overall development of its students.
-    With a strong commitment to values and a supportive environment, it has become a beacon of 
-    hope and inspiration for thousands of students over the decades. 
-    Its alumni have gone on to make significant contributions to society in various fields, 
-    carrying forward the legacy of Notre Dame College.
-  `;
+  useEffect(() => {
+    const fetchPrincipalData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/principal`);
+        const data = await response.json();
+        if (data.success) {
+          setPrincipalData(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching principal data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const shortMessage = `
-    Notre Dame College, Dhaka is one of the most renowned educational institutions in Bangladesh. 
-    Since its inception in 1949, it has been maintaining excellence in academic performance, 
-    discipline and character formation...
-  `;
+    fetchPrincipalData();
+  }, []);
+
+  if (loading) {
+    return <div className="bg-white shadow-lg rounded-lg p-6">Loading...</div>;
+  }
+
+  const shortMessage = principalData.message.split('.').slice(0, 2).join('.') + '...';
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6">
@@ -29,20 +43,20 @@ export default function PrincipalMessage() {
         <div className="md:w-1/3">
           <div className="relative h-[300px] w-full">
             <Image
-              src="/assets/images/poeple/inspiring-new-boss.jpg"
+              src={principalData.imageUrl}
               alt="Principal"
               fill
               className="object-cover rounded-lg"
             />
           </div>
           <div className="text-center mt-4">
-            <h3 className="font-bold text-lg">Fr. Hemanto Pius Rozario, CSC</h3>
-            <p className="text-gray-600">Principal</p>
+            <h3 className="font-bold text-lg">{principalData.name}</h3>
+            <p className="text-gray-600">{principalData.title}</p>
           </div>
         </div>
         <div className="md:w-2/3">
           <p className="text-gray-600 mb-4">
-            {isExpanded ? fullMessage : shortMessage}
+            {isExpanded ? principalData.message : shortMessage}
           </p>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
