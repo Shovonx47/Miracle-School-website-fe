@@ -1,64 +1,47 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Download } from 'lucide-react';
 
-const CurriculumLayout = () => {
-  // State to track which accordion items are open
-  const [openItems, setOpenItems] = useState({});
+const API_BASE_URL = 'https://miracle-school-landing-page-be.vercel.app';
 
-  // Sample curriculum data in Bangla
-  const curriculumData = [
-    {
-      class: "প্রথম শ্রেণী",
-      topics: "গণিত: সংখ্যা পরিচিতি, যোগ-বিয়োগ\nবাংলা: বর্ণমালা, শব্দ গঠন\nইংরেজি: ABC পরিচিতি",
-      pdfUrl: "/class1-syllabus.pdf"
-    },
-    {
-      class: "দ্বিতীয় শ্রেণী",
-      topics: "গণিত: গুণ-ভাগ, জ্যামিতি\nবাংলা: ছোট গল্প, ব্যাকরণ\nইংরেজি: শব্দ শিক্ষা",
-      pdfUrl: "/class2-syllabus.pdf"
-    },
-    {
-      class: "তৃতীয় শ্রেণী",
-      topics: "গণিত: ভগ্নাংশ, দশমিক\nবাংলা: রচনা, পত্র লিখন\nবিজ্ঞান: পরিবেশ পরিচিতি",
-      pdfUrl: "/class3-syllabus.pdf"
-    },
-    {
-      class: "চতুর্থ শ্রেণী",
-      topics: "গণিত: ক্ষেত্রফল, আয়তন\nবাংলা: ব্যাকরণ, সাহিত্য\nবিজ্ঞান: জীবজগৎ",
-      pdfUrl: "/class4-syllabus.pdf"
-    },
-    {
-      class: "পঞ্চম শ্রেণী",
-      topics: "গণিত: বীজগণিত\nবাংলা: কবিতা, প্রবন্ধ\nবিজ্ঞান: পদার্থবিজ্ঞান",
-      pdfUrl: "/class5-syllabus.pdf"
-    },
-    {
-      class: "ষষ্ঠ শ্রেণী",
-      topics: "গণিত: সমীকরণ\nবাংলা: সাহিত্য সমালোচনা\nবিজ্ঞান: রসায়ন",
-      pdfUrl: "/class6-syllabus.pdf"
-    },
-    {
-      class: "সপ্তম শ্রেণী",
-      topics: "গণিত: ত্রিকোণমিতি\nবাংলা: প্রাচীন সাহিত্য\nবিজ্ঞান: জীববিজ্ঞান",
-      pdfUrl: "/class7-syllabus.pdf"
-    },
-    {
-      class: "অষ্টম শ্রেণী",
-      topics: "গণিত: জ্যামিতি\nবাংলা: আধুনিক সাহিত্য\nবিজ্ঞান: পরিবেশ বিজ্ঞান",
-      pdfUrl: "/class8-syllabus.pdf"
-    },
-    {
-      class: "নবম শ্রেণী",
-      topics: "গণিত: ক্যালকুলাস\nবাংলা: বাংলা সাহিত্যের ইতিহাস\nবিজ্ঞান: পদার্থ ও রসায়ন",
-      pdfUrl: "/class9-syllabus.pdf"
-    },
-    {
-      class: "দশম শ্রেণী",
-      topics: "গণিত: উচ্চতর গণিত\nবাংলা: বাংলা সাহিত্যের যুগ বিভাজন\nবিজ্ঞান: জীববিজ্ঞান ও পরিবেশ",
-      pdfUrl: "/class10-syllabus.pdf"
-    }
-  ];
+const CurriculumLayout = () => {
+  const [openItems, setOpenItems] = useState({});
+  const [curriculumData, setCurriculumData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCurriculum = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/curriculum`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'omit'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data || !data.data) {
+          throw new Error('Invalid response format');
+        }
+
+        setCurriculumData(data.data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching curriculum:', err);
+        setError(err.message || 'Failed to load curriculum data');
+        setLoading(false);
+      }
+    };
+
+    fetchCurriculum();
+  }, []);
 
   const toggleAccordion = (index) => {
     setOpenItems(prev => ({
@@ -67,10 +50,72 @@ const CurriculumLayout = () => {
     }));
   };
 
-  const handleDownload = (pdfUrl, className) => {
-    // In a real application, this would trigger the actual PDF download
-    console.log(`Downloading syllabus for ${className}`);
+  const handleDownload = async (pdfUrl, className) => {
+    try {
+      // Ensure the PDF URL is properly formatted
+      const fullPdfUrl = pdfUrl.startsWith('http') ? pdfUrl : `${API_BASE_URL}${pdfUrl}`;
+      
+      const response = await fetch(fullPdfUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/pdf, application/octet-stream',
+        },
+        credentials: 'omit'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Check if we received a PDF
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('pdf')) {
+        console.warn('Warning: Response may not be a PDF:', contentType);
+      }
+
+      const blob = await response.blob();
+      if (blob.size === 0) {
+        throw new Error('Downloaded file is empty');
+      }
+
+      // Create and trigger download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${className}-syllabus.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+
+    } catch (err) {
+      console.error('Error downloading PDF:', err);
+      alert('PDF ডাউনলোড করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
+        <div className="text-primary text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
+        <div className="text-red-500">
+          <p className="text-xl">ত্রুটি: {error}</p>
+          <p className="mt-2">পৃষ্ঠাটি রিফ্রেশ করুন</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -100,16 +145,17 @@ const CurriculumLayout = () => {
               </div>
               
               {openItems[index] && (
-                <div className="bg-gray-50 p-4 border-t border-secondary">
-                  <div className="whitespace-pre-line mb-4 text-gray-700">
+                <div className="p-4 bg-gray-50 border-t-2 border-secondary">
+                  <div className="whitespace-pre-wrap mb-4 text-gray-700">
                     {item.topics}
                   </div>
+                  
                   <button
                     onClick={() => handleDownload(item.pdfUrl, item.class)}
-                    className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/80 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
                   >
-                    <Download className="h-4 w-4" />
-                    সিলেবাস ডাউনলোড করুন
+                    <Download className="h-5 w-5" />
+                    <span>সিলেবাস ডাউনলোড করুন</span>
                   </button>
                 </div>
               )}
