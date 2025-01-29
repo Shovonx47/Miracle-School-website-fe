@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, BookOpen, Users, Shirt } from 'lucide-react';
 import axios from 'axios';
 
+const API_BASE_URL = 'https://miracle-school-landing-page-be.vercel.app';
+
 const AcademicCalendar = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [calendarData, setCalendarData] = useState([]);
@@ -12,15 +14,37 @@ const AcademicCalendar = () => {
   useEffect(() => {
     const fetchCalendarData = async () => {
       try {
-        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/academic-calendar`);
-        const formattedData = data.data.reduce((acc, item) => {
+        console.log('Fetching from:', `${API_BASE_URL}/api/v1/academic-calendar`);
+        const response = await axios.get(`${API_BASE_URL}/api/v1/academic-calendar`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log('API Response:', response);
+        
+        if (!response.data || !response.data.data) {
+          throw new Error('Invalid response format');
+        }
+
+        const formattedData = response.data.data.reduce((acc, item) => {
           acc[item.section] = item.events;
           return acc;
         }, {});
+
+        console.log('Formatted Data:', formattedData);
         setCalendarData(formattedData);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load calendar data');
+        console.error('Error details:', {
+          message: err.message,
+          response: err.response,
+          request: err.request,
+          config: err.config
+        });
+        
+        setError(err.response?.data?.message || err.message || 'Failed to load calendar data');
         setLoading(false);
       }
     };
@@ -43,15 +67,18 @@ const AcademicCalendar = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-        <div className="text-red-500">{error}</div>
+        <div className="text-red-500">
+          <p>Error: {error}</p>
+          <p className="mt-2 text-sm">Please try refreshing the page</p>
+        </div>
       </div>
     );
   }
 
   const sections = [
-    { id: 'primary', title: 'Primary School Calendar' },
-    { id: 'middle', title: 'Middle School Calendar' },
-    { id: 'high', title: 'High School Calendar' }
+    { id: 'primary', title: 'প্রাথমিক বিদ্যালয়ের ক্যালেন্ডার' },
+    { id: 'middle', title: 'মাধ্যমিক বিদ্যালয়ের ক্যালেন্ডার' },
+    { id: 'high', title: 'উচ্চ বিদ্যালয়ের ক্যালেন্ডার' }
   ];
 
   return (
