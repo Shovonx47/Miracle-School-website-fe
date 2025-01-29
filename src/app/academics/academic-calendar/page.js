@@ -1,34 +1,58 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, BookOpen, Users, Shirt } from 'lucide-react';
+import axios from 'axios';
 
 const AcademicCalendar = () => {
   const [activeSection, setActiveSection] = useState(null);
+  const [calendarData, setCalendarData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const calendars = {
-    primary: [
-      { date: "2025-01-15", day: "Wednesday", event: "First Day of School" },
-      { date: "2025-02-14", day: "Friday", event: "Parent-Teacher Meeting" },
-      { date: "2025-03-21", day: "Friday", event: "Spring Break Begins" },
-      { date: "2025-04-05", day: "Monday", event: "Sports Day" }
-    ],
-    middle: [
-      { date: "2025-01-16", day: "Thursday", event: "Orientation Day" },
-      { date: "2025-02-28", day: "Friday", event: "Science Fair" },
-      { date: "2025-03-22", day: "Saturday", event: "Sports Day" },
-      { date: "2025-04-15", day: "Thursday", event: "Annual Day" }
-    ],
-    high: [
-      { date: "2025-01-17", day: "Friday", event: "Senior Assembly" },
-      { date: "2025-02-21", day: "Friday", event: "Career Counseling Day" },
-      { date: "2025-03-25", day: "Tuesday", event: "College Fair" },
-      { date: "2025-04-20", day: "Monday", event: "Graduation Ceremony" }
-    ]
-  };
+  useEffect(() => {
+    const fetchCalendarData = async () => {
+      try {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/academic-calendar`);
+        const formattedData = data.data.reduce((acc, item) => {
+          acc[item.section] = item.events;
+          return acc;
+        }, {});
+        setCalendarData(formattedData);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to load calendar data');
+        setLoading(false);
+      }
+    };
+
+    fetchCalendarData();
+  }, []);
 
   const toggleSection = (section) => {
     setActiveSection(activeSection === section ? null : section);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="text-primary">Loading calendar data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  const sections = [
+    { id: 'primary', title: 'Primary School Calendar' },
+    { id: 'middle', title: 'Middle School Calendar' },
+    { id: 'high', title: 'High School Calendar' }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -41,119 +65,44 @@ const AcademicCalendar = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Calendar Section */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Primary School Accordion */}
-            <div className="shadow-lg rounded-xl overflow-hidden bg-white transition-all duration-300 hover:shadow-xl">
-              <button 
-                onClick={() => toggleSection('primary')}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-primary to-blue-600 text-white hover:from-blue-600 hover:to-primary transition-all duration-300"
-              >
-                <div className="flex-1 text-center">
-                  <span className="text-xl font-semibold">Primary School Calendar</span>
-                </div>
-                <div className="bg-white bg-opacity-20 rounded-full p-1">
-                  {activeSection === 'primary' ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-                </div>
-              </button>
-              
-              {activeSection === 'primary' && (
-                <div className="p-6">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Date</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Day</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Event</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {calendars.primary.map((event, index) => (
-                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.date}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.day}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-900 font-medium">{event.event}</td>
+            {sections.map(({ id, title }) => (
+              <div key={id} className="shadow-lg rounded-xl overflow-hidden bg-white transition-all duration-300 hover:shadow-xl">
+                <button 
+                  onClick={() => toggleSection(id)}
+                  className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-primary to-blue-600 text-white hover:from-blue-600 hover:to-primary transition-all duration-300"
+                >
+                  <div className="flex-1 text-center">
+                    <span className="text-xl font-semibold">{title}</span>
+                  </div>
+                  <div className="bg-white bg-opacity-20 rounded-full p-1">
+                    {activeSection === id ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                  </div>
+                </button>
+                
+                {activeSection === id && calendarData[id] && (
+                  <div className="p-6">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Date</th>
+                          <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Day</th>
+                          <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Event</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-
-            {/* Middle School Accordion */}
-            <div className="shadow-lg rounded-xl overflow-hidden bg-white transition-all duration-300 hover:shadow-xl">
-              <button 
-                onClick={() => toggleSection('middle')}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-primary to-blue-600 text-white hover:from-blue-600 hover:to-primary transition-all duration-300"
-              >
-                <div className="flex-1 text-center">
-                  <span className="text-xl font-semibold">Middle School Calendar</span>
-                </div>
-                <div className="bg-white bg-opacity-20 rounded-full p-1">
-                  {activeSection === 'middle' ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-                </div>
-              </button>
-              
-              {activeSection === 'middle' && (
-                <div className="p-6">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Date</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Day</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Event</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {calendars.middle.map((event, index) => (
-                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.date}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.day}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-900 font-medium">{event.event}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-
-            {/* High School Accordion */}
-            <div className="shadow-lg rounded-xl overflow-hidden bg-white transition-all duration-300 hover:shadow-xl">
-              <button 
-                onClick={() => toggleSection('high')}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-primary to-blue-600 text-white hover:from-blue-600 hover:to-primary transition-all duration-300"
-              >
-                <div className="flex-1 text-center">
-                  <span className="text-xl font-semibold">High School Calendar</span>
-                </div>
-                <div className="bg-white bg-opacity-20 rounded-full p-1">
-                  {activeSection === 'high' ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-                </div>
-              </button>
-              
-              {activeSection === 'high' && (
-                <div className="p-6">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Date</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Day</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Event</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {calendars.high.map((event, index) => (
-                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.date}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-700">{event.day}</td>
-                          <td className="px-6 py-4 text-center text-sm text-gray-900 font-medium">{event.event}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {calendarData[id].map((event, index) => (
+                          <tr key={index} className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 text-center text-sm text-gray-700">{event.date}</td>
+                            <td className="px-6 py-4 text-center text-sm text-gray-700">{event.day}</td>
+                            <td className="px-6 py-4 text-center text-sm text-gray-900 font-medium">{event.event}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
           {/* Quick Links Section */}
