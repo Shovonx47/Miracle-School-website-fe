@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Download } from 'lucide-react';
 
-const API_BASE_URL = 'https://miracle-school-landing-page-be.vercel.app';
-
 const CurriculumLayout = () => {
   const [openItems, setOpenItems] = useState({});
   const [curriculumData, setCurriculumData] = useState([]);
@@ -13,7 +11,7 @@ const CurriculumLayout = () => {
   useEffect(() => {
     const fetchCurriculum = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/curriculum`, {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/v1/curriculum', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -50,48 +48,20 @@ const CurriculumLayout = () => {
     }));
   };
 
-  const handleDownload = async (pdfUrl, className) => {
+  const handleDownload = (className) => {
     try {
-      // Ensure the PDF URL is properly formatted
-      const fullPdfUrl = pdfUrl.startsWith('http') ? pdfUrl : `${API_BASE_URL}${pdfUrl}`;
-      
-      const response = await fetch(fullPdfUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/pdf, application/octet-stream',
-        },
-        credentials: 'omit'
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Check if we received a PDF
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('pdf')) {
-        console.warn('Warning: Response may not be a PDF:', contentType);
-      }
-
-      const blob = await response.blob();
-      if (blob.size === 0) {
-        throw new Error('Downloaded file is empty');
-      }
-
-      // Create and trigger download
-      const url = window.URL.createObjectURL(blob);
+      // Create a link element
       const link = document.createElement('a');
-      link.href = url;
+      // Set the href to the static PDF file in your assets
+      link.href = '/assets/files/Profile-AP5-06.12.24-new-address.pdf';
+      // Set the download filename
       link.download = `${className}-syllabus.pdf`;
+      // Append to body
       document.body.appendChild(link);
+      // Trigger the download
       link.click();
-      
       // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      }, 100);
-
+      document.body.removeChild(link);
     } catch (err) {
       console.error('Error downloading PDF:', err);
       alert('PDF ডাউনলোড করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
@@ -151,7 +121,7 @@ const CurriculumLayout = () => {
                   </div>
                   
                   <button
-                    onClick={() => handleDownload(item.pdfUrl, item.class)}
+                    onClick={() => handleDownload(item.class)}
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
                   >
                     <Download className="h-5 w-5" />
