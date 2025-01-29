@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from 'react';
 // Import existing components
 import Navbar from '@/components/Navbar';
 import HeroSlider from '@/components/HeroSlider';
@@ -14,17 +16,13 @@ import WelcomeSection from '@/components/sections/WelcomeSection';
 import KeyFeaturesSection from '@/components/sections/KeyFeaturesSection';
 import NewsEventsSection from '@/components/sections/NewsEventsSection';
 
-// Metadata for the page
-export const metadata = {
-  title: 'Home', // Will render as "Home | Notre Dame College Dhaka"
-  description: 'Welcome to Notre Dame College Dhaka - Discover academic excellence, vibrant campus life, and our rich educational heritage.',
-  openGraph: {
-    title: 'Home | Notre Dame College Dhaka',
-    description: 'Welcome to Notre Dame College Dhaka - Discover academic excellence, vibrant campus life, and our rich educational heritage.',
-  },
-};
+import { prefetchPageData } from '@/utils/prefetch';
 
 export default function Home() {
+  useEffect(() => {
+    prefetchPageData();
+  }, []);
+
   return (
     <>
       <main className="landing-page">
@@ -46,7 +44,7 @@ export default function Home() {
           </div>
 
           {/* Right content: Quick links and notice board */}
-          <div className="lg:col-span-1">
+          <div className="space-y-8">
             <QuickLinks />
             <NoticeBoard />
           </div>

@@ -1,7 +1,9 @@
 "use client";
+
 import { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function NewsEventsSection() {
   const [news, setNews] = useState([]);
@@ -35,8 +37,8 @@ export default function NewsEventsSection() {
 
   if (loading) {
     return (
-      <div className="py-16 text-center">
-        <p className="text-gray-600">Loading news...</p>
+      <div className="py-16 flex justify-center items-center">
+        <LoadingSpinner />
       </div>
     );
   }
