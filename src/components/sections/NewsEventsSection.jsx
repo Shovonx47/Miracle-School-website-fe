@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import Link from 'next/link';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { getApiUrl } from "@/utils/api";
 
 export default function NewsEventsSection() {
   const [news, setNews] = useState([]);
@@ -13,18 +14,16 @@ export default function NewsEventsSection() {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/news');
-        if (!response.ok) {
-          throw new Error('Failed to fetch news');
-        }
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/news`);
         const data = await response.json();
-        
-        // Sort by date and get the last 3 items
-        const sortedNews = data.news
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 3);
-        
-        setNews(sortedNews);
+        if (data.success) {
+          // Sort by date and get the last 3 items
+          const sortedNews = data.data
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, 3);
+          setNews(sortedNews);
+        }
       } catch (err) {
         setError(err.message);
       } finally {

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { getApiUrl } from "@/utils/api";
 
 export default function PrincipalMessage() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -15,7 +16,8 @@ export default function PrincipalMessage() {
   useEffect(() => {
     const fetchPrincipalData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/principal`);
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/principal`);
         const data = await response.json();
         if (data.success) {
           setPrincipalData(data.data);

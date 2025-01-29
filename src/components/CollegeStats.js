@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { getApiUrl } from "@/utils/api";
 
 export default function CollegeStats() {
   const [stats, setStats] = useState([]);
@@ -8,7 +9,8 @@ export default function CollegeStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/college-stats`);
+        const apiUrl = getApiUrl();
+        const response = await fetch(`${apiUrl}/api/college-stats`);
         const data = await response.json();
         if (data.success) {
           setStats(data.data);
