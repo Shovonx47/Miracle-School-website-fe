@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
-import axios from 'axios';
 
 const FAQPage = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -13,10 +12,25 @@ const FAQPage = () => {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/faqs`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/faqs`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // Add any required authentication headers here
+          },
+          // Enable credentials if you need to send cookies
+          // credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
         setFaqData(data.faqs);
         setLoading(false);
       } catch (error) {
+        console.error('Error fetching FAQs:', error);
         setError('Error fetching FAQs. Please try again later.');
         setLoading(false);
       }
