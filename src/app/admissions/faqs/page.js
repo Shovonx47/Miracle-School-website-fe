@@ -1,41 +1,36 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
+import axios from 'axios';
 
 const FAQPage = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const [faqData, setFaqData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const faqData = [
-    {
-      question: "What are the admission requirements for the upcoming academic year?",
-      answer: "Our admission requirements include:\n- Completed application form\n- Previous academic records\n- Two letters of recommendation\n- Recent passport-size photograph\n- Valid ID proof\n- Entrance test scores (if applicable)\n\nPlease ensure all documents are submitted before the deadline."
-    },
-    {
-      question: "What is the admission process timeline?",
-      answer: "The admission process typically follows this schedule:\n- Application Opens: January 15th\n- Early Bird Deadline: March 1st\n- Regular Application Deadline: April 30th\n- Entrance Tests: May 15th-20th\n- Results Declaration: June 1st\n- Admission Confirmation: Within 2 weeks of results"
-    },
-    {
-      question: "Are there any scholarships available?",
-      answer: "Yes, we offer several scholarship opportunities:\n- Merit-based academic scholarships\n- Sports excellence scholarships\n- Need-based financial aid\n- Sibling discounts\n- Early bird application discounts\n\nEach scholarship has specific eligibility criteria and application processes."
-    },
-    {
-      question: "What are the age requirements for different grades?",
-      answer: "Our age requirements as of June 1st are:\n- Kindergarten: 5 years\n- Grade 1: 6 years\n- Grade 2: 7 years\nAnd so on. We may consider a 3-month relaxation in special cases."
-    },
-    {
-      question: "How can I schedule a campus tour?",
-      answer: "Campus tours can be scheduled through:\n- Online booking through our website\n- Calling our admissions office at (555) 123-4567\n- Emailing us at admissions@school.edu\n\nTours are available Monday through Friday, 9 AM to 3 PM."
-    },
-    {
-      question: "What extracurricular activities are offered?",
-      answer: "We offer a wide range of extracurricular activities including:\n- Sports (Basketball, Soccer, Swimming)\n- Arts (Music, Dance, Drama)\n- Clubs (Science, Debate, Photography)\n- Community Service Programs\n- Leadership Development Activities"
-    }
-  ];
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/faqs`);
+        setFaqData(data.faqs);
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching FAQs. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchFAQs();
+  }, []);
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
 
   return (
     <div className="min-h-screen bg-background">
