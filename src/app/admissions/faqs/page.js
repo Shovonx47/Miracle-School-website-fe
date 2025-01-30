@@ -12,14 +12,11 @@ const FAQPage = () => {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/faqs`, {
+        const response = await fetch('https://miracle-school-landing-page-be.vercel.app/api/v1/faqs', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // Add any required authentication headers here
           },
-          // Enable credentials if you need to send cookies
-          // credentials: 'include',
         });
 
         if (!response.ok) {
