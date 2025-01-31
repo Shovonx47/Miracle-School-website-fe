@@ -137,19 +137,19 @@ const AcademicCalendar = () => {
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-bold text-primary mb-6 text-center">Quick Links</h2>
               <div className="space-y-4">
-                <a href="#" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
+                <a href="/code-of-conduct" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
                   <div className="bg-primary bg-opacity-10 p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
                     <BookOpen size={24} className="text-primary group-hover:text-white" />
                   </div>
                   <span className="font-medium text-gray-700 group-hover:text-primary">Code of Conduct</span>
                 </a>
-                <a href="#" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
+                <a href="/dress-code" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
                   <div className="bg-primary bg-opacity-10 p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
                     <Shirt size={24} className="text-primary group-hover:text-white" />
                   </div>
                   <span className="font-medium text-gray-700 group-hover:text-primary">Dress Code</span>
                 </a>
-                <a href="#" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
+                <a href="/parent-guidelines" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group">
                   <div className="bg-primary bg-opacity-10 p-2 rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">
                     <Users size={24} className="text-primary group-hover:text-white" />
                   </div>
