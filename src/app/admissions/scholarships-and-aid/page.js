@@ -1,70 +1,46 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { GraduationCap, Calendar, Download, File, HelpCircle, BookOpen, FileText } from 'lucide-react';
 
 const ScholarshipPage = () => {
-  const scholarshipTypes = [
-    {
-      title: "মেধা বৃত্তি",
-      coverage: "১০০%",
-      requirements: ["জিপিএ ৫.০০", "স্কুলের নিয়মিত ছাত্র", "ভালো আচরণ"],
-      duration: "বাৎসরিক",
-    },
-    {
-      title: "অর্ধ-মেধা বৃত্তি",
-      coverage: "৫০%",
-      requirements: ["জিপিএ ৪.৫০+", "স্কুলের নিয়মিত ছাত্র", "ভালো আচরণ"],
-      duration: "বাৎসরিক",
-    },
-    {
-      title: "বিশেষ বৃত্তি",
-      coverage: "৭৫%",
-      requirements: ["প্রতিভাবান শিক্ষার্থী", "বিশেষ প্রতিভা", "স্কুল প্রতিনিধিত্ব"],
-      duration: "বাৎসরিক",
-    }
-  ];
+  const [pageData, setPageData] = useState({
+    scholarshipTypes: [],
+    requiredDocuments: [],
+    deadlines: [],
+    pdfUrl: ''
+  });
+  const [loading, setLoading] = useState(true);
 
-  const requiredDocuments = [
-    {
-      name: "শিক্ষাগত সনদ",
-      description: "সর্বশেষ শিক্ষাবর্ষের মার্কশীট",
-    },
-    {
-      name: "আয়ের প্রমাণপত্র",
-      description: "পিতা-মাতার আয়ের প্রমাণপত্র",
-    },
-    {
-      name: "প্রত্যয়নপত্র",
-      description: "বর্তমান শিক্ষা প্রতিষ্ঠানের প্রত্যয়নপত্র",
-    },
-    {
-      name: "অন্যান্য কাগজপত্র",
-      description: "জাতীয় পরিচয়পত্র/জন্মনিবন্ধন",
-    }
-  ];
+  useEffect(() => {
+    const fetchScholarshipData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scholarship-data`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setPageData(data);
+      } catch (error) {
+        console.error('Error fetching scholarship data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const deadlines = [
-    {
-      title: "আবেদনের শুরু",
-      description: "১ জুন, ২০২৪",
-      icon: <Calendar className="w-6 h-6" />
-    },
-    {
-      title: "শেষ তারিখ",
-      description: "৩০ জুন, ২০২৪",
-      icon: <FileText className="w-6 h-6" />
-    },
-    {
-      title: "ফলাফল",
-      description: "১৫ জুলাই, ২০২৪",
-      icon: <File className="w-6 h-6" />
-    }
-  ];
+    fetchScholarshipData();
+  }, []);
 
   const handleDownload = () => {
-    const pdfUrl = '/documents/scholarship-2024-2025.pdf';
+    const pdfUrl = pageData.pdfUrl;
     const link = document.createElement('a');
     link.href = pdfUrl;
     link.download = 'Scholarship_Details_2024_2025.pdf';
@@ -72,6 +48,10 @@ const ScholarshipPage = () => {
     link.click();
     document.body.removeChild(link);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -113,7 +93,7 @@ const ScholarshipPage = () => {
       <div className="container mx-auto px-4 py-12">
         {/* Scholarship Types Section */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {scholarshipTypes.map((scholarship) => (
+          {pageData.scholarshipTypes.map((scholarship) => (
             <div key={scholarship.title} className="bg-white rounded-lg shadow-lg overflow-hidden">
               <div className="bg-primary text-white p-6">
                 <h3 className="text-xl font-bold">{scholarship.title}</h3>
@@ -139,7 +119,7 @@ const ScholarshipPage = () => {
           <h2 className="text-2xl font-bold text-primary mb-6 text-center">প্রয়োজনীয় কাগজপত্র</h2>
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 divide-x divide-gray-200">
-              {requiredDocuments.map((doc) => (
+              {pageData.requiredDocuments.map((doc) => (
                 <div key={doc.name} className="p-6">
                   <h3 className="font-bold text-lg mb-2">{doc.name}</h3>
                   <p className="text-sm text-gray-600">{doc.description}</p>
@@ -153,7 +133,7 @@ const ScholarshipPage = () => {
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-primary mb-6 text-center">গুরুত্বপূর্ণ তারিখ</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {deadlines.map((deadline) => (
+            {pageData.deadlines.map((deadline) => (
               <div key={deadline.title} className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center mb-4">
                   <div className="bg-primary/10 p-3 rounded-full mr-4">
